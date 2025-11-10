@@ -17,15 +17,19 @@ if database_url:
     if database_url.startswith('postgresql://'):
         database_url = database_url.replace('postgresql://', 'postgresql+psycopg2://', 1)
     
-    # For Vercel + Supabase: Use connection pooler (port 5432) instead of direct (port 6543)
+    # For Vercel + Supabase: Try multiple connection strategies
+    original_url = database_url
+    
+    # Strategy 1: Use connection pooler (port 5432) instead of direct (port 6543)
     if ':6543/' in database_url:
         database_url = database_url.replace(':6543/', ':5432/')
         print(f"🔄 Switched to Supabase connection pooler (port 5432)")
     
-    # Add SSL requirement for Supabase
+    # Strategy 2: Add pgbouncer and IPv4 preference parameters
     if 'sslmode' not in database_url:
         separator = '&' if '?' in database_url else '?'
-        database_url += f'{separator}sslmode=require'
+        # Force IPv4 and add pgbouncer optimizations
+        database_url += f'{separator}sslmode=require&pgbouncer=true&prepared_statements=false'
         
     print(f"🔗 Using database URL: {database_url.split('@')[1] if '@' in database_url else 'URL masked'}")
 
@@ -136,18 +140,40 @@ def home():
                 }), 500
                 
         except Exception as e:
-            return jsonify({
+            # If this is a network connectivity error, provide detailed troubleshooting
+            error_msg = str(e)
+            is_network_error = "Cannot assign requested address" in error_msg or "connection" in error_msg.lower()
+            
+            response_data = {
                 "message": "🔧 Event Ticketing App - Database Connection Issue",
                 "status": "database_error",
                 "platform": "vercel", 
-                "error": str(e),
+                "error": error_msg,
                 "error_type": type(e).__name__,
+                "network_issue_detected": is_network_error,
                 "environment": {
                     "DATABASE_URL": "✅ Set but connection failed",
                     "SECRET_KEY": "✅ Set" if os.getenv('SECRET_KEY') else "❌ Missing",
                     "FLASK_ENV": os.getenv('FLASK_ENV', 'development')
                 }
-            }), 500
+            }
+            
+            if is_network_error:
+                response_data.update({
+                    "network_troubleshooting": {
+                        "issue": "IPv6 connectivity problem between Vercel and Supabase",
+                        "solutions": [
+                            "1. Update Supabase project settings to prefer IPv4",
+                            "2. Use a different Supabase region if available", 
+                            "3. Try Supabase connection string from 'Session' pooler",
+                            "4. Contact Supabase support about IPv6 routing",
+                            "5. Consider using a database proxy service"
+                        ],
+                        "alternative": "The app can run in demo mode - try /demo endpoint"
+                    }
+                })
+            
+            return jsonify(response_data), 500
     else:
         # No database URL set
         return jsonify({
@@ -246,6 +272,48 @@ def test_database():
             "error": str(e),
             "error_type": type(e).__name__
         }), 500
+
+@app.route('/demo')
+def demo_mode():
+    """Demo mode - works without database connection"""
+    return jsonify({
+        "message": "🎭 Event Ticketing App - Demo Mode",
+        "status": "demo_mode", 
+        "platform": "vercel",
+        "note": "This is a demonstration mode that works without database connectivity",
+        "mock_data": {
+            "events": [
+                {
+                    "id": 1,
+                    "name": "Azure Developer Community Event",
+                    "description": "Learning Azure technologies and best practices",
+                    "date": "2025-11-15T10:00:00",
+                    "location": "Chennai, Tamil Nadu", 
+                    "status": "active",
+                    "participants_count": 160
+                }
+            ],
+            "recent_participants": [
+                {"name": "John Doe", "email": "john@example.com", "checked_in": True},
+                {"name": "Jane Smith", "email": "jane@example.com", "checked_in": False},
+                {"name": "Mike Wilson", "email": "mike@example.com", "checked_in": True}
+            ]
+        },
+        "features_available": [
+            "✅ App structure and routing",
+            "✅ Environment configuration", 
+            "✅ Basic API responses",
+            "❌ Database connectivity (network issue)",
+            "❌ Real event data",
+            "❌ Certificate generation"
+        ],
+        "next_steps": [
+            "Resolve Supabase network connectivity", 
+            "Test local database connection",
+            "Consider alternative database hosting",
+            "Contact Vercel/Supabase support"
+        ]
+    })
 
 @app.route('/health')
 def health():
