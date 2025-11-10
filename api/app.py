@@ -25,11 +25,11 @@ if database_url:
         database_url = database_url.replace(':6543/', ':5432/')
         print(f"🔄 Switched to Supabase connection pooler (port 5432)")
     
-    # Strategy 2: Add pgbouncer and IPv4 preference parameters
+    # Strategy 2: Add SSL and connection optimizations for Supabase pooler
     if 'sslmode' not in database_url:
         separator = '&' if '?' in database_url else '?'
-        # Force IPv4 and add pgbouncer optimizations
-        database_url += f'{separator}sslmode=require&pgbouncer=true&prepared_statements=false'
+        # Add valid PostgreSQL connection parameters only
+        database_url += f'{separator}sslmode=require&statement_timeout=30000&lock_timeout=10000'
         
     print(f"🔗 Using database URL: {database_url.split('@')[1] if '@' in database_url else 'URL masked'}")
 
