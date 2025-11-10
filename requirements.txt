@@ -1,0 +1,73 @@
+# Core Flask and extensions# Core Flask and extensions
+
+Flask==3.0.0Flask==3.0.0
+
+Flask-SQLAlchemy==3.1.1Flask-SQLAlchemy==3.1.1
+
+Flask-Migrate==4.0.5Flask-Migrate==4.0.5
+
+Flask-WTF==1.2.1Flask-WTF==1.2.1
+
+Flask-Mail==0.9.1Flask-Mail==0.9.1
+
+WTForms==3.1.1WTForms==3.1.1
+
+
+
+# Database# Database
+
+SQLAlchemy==2.0.23SQLAlchemy==2.0.23
+
+Alembic==1.12.1Alembic==1.12.1
+
+psycopg2-binary==2.9.9psycopg2-binary==2.9.9
+
+
+
+# File handling and data processing# File handling and data processing
+
+pandas==2.1.4pandas==2.1.4
+
+openpyxl==3.1.2openpyxl==3.1.2
+
+Werkzeug==3.0.1Werkzeug==3.0.1
+
+
+
+# PDF generation# PDF generation
+
+reportlab==4.0.8reportlab==4.0.8
+
+
+
+# QR Code generation# QR Code generation
+
+qrcode[pil]==7.4.2qrcode[pil]==7.4.2
+
+Pillow==10.1.0Pillow==10.1.0
+
+
+
+# Email and security# Email and security
+
+email-validator==2.1.0.post1email-validator==2.1.0.post1
+
+
+
+# Cloud Storage (Multiple Providers)# Cloud Storage (Multiple Providers)
+
+requests==2.31.0requests==2.31.0
+
+cloudinary==1.36.0cloudinary==1.36.0
+
+
+
+# Logging and monitoring# Logging and monitoring
+
+python-dotenv==1.0.0python-dotenv==1.0.0
+
+# Azure deployment
+gunicorn==21.2.0
+
+# Development tools
+python-dateutil==2.8.2
