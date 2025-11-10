@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/test.py",
+      "src": "api/index.py",
       "use": "@vercel/python"
     }
   ],
@@ -13,17 +13,12 @@
     },
     {
       "src": "/(.*)",
-      "dest": "api/test.py"
+      "dest": "api/index.py"
     }
   ],
-  "env": {
-    "FLASK_ENV": "production",
-    "PYTHONPATH": "."
-  },
   "functions": {
     "api/index.py": {
-      "maxDuration": 30,
-      "memory": 1024
+      "maxDuration": 30
     }
   }
 }
