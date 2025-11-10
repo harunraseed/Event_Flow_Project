@@ -1,9 +1,14 @@
-# Minimum requirements for Vercel deployment# Core Flask and extensions# Core Flask and extensions
+Flask==3.0.0# Minimum requirements for Vercel deployment# Core Flask and extensions# Core Flask and extensions
 
-Flask==3.0.0
+Werkzeug==3.0.1
 
-Werkzeug==3.0.1Flask==3.0.0Flask==3.0.0
+Flask-SQLAlchemy==3.1.1Flask==3.0.0
 
+psycopg2-binary==2.9.9
+
+python-dotenv==1.0.0Werkzeug==3.0.1Flask==3.0.0Flask==3.0.0
+
+requests==2.31.0
 
 
 # Database supportFlask-SQLAlchemy==3.1.1Flask-SQLAlchemy==3.1.1
