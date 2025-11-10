@@ -16,18 +16,29 @@ if database_url:
     # Fix for Vercel/Supabase connectivity issues
     if database_url.startswith('postgresql://'):
         database_url = database_url.replace('postgresql://', 'postgresql+psycopg2://', 1)
-    # Add SSL requirement for Supabase (remove invalid parameter)
+    
+    # For Vercel + Supabase: Use connection pooler (port 5432) instead of direct (port 6543)
+    if ':6543/' in database_url:
+        database_url = database_url.replace(':6543/', ':5432/')
+        print(f"🔄 Switched to Supabase connection pooler (port 5432)")
+    
+    # Add SSL requirement for Supabase
     if 'sslmode' not in database_url:
         separator = '&' if '?' in database_url else '?'
         database_url += f'{separator}sslmode=require'
+        
+    print(f"🔗 Using database URL: {database_url.split('@')[1] if '@' in database_url else 'URL masked'}")
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     'pool_pre_ping': True,
     'pool_recycle': 300,
+    'pool_size': 5,
+    'max_overflow': 0,
     'connect_args': {
-        'connect_timeout': 10
+        'connect_timeout': 10,
+        'application_name': 'vercel_event_app'
     }
 }
 
