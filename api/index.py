@@ -15,14 +15,19 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # Initialize app variable
 app = None
 
+import_error = None
+import_traceback = None
+
 try:
     # Try to import the main Flask app
     from app import app as main_app
     app = main_app
     print("✅ Successfully imported main Flask app")
 except Exception as e:
-    print(f"⚠️ Could not import main app: {e}")
-    print(f"⚠️ Full traceback: {traceback.format_exc()}")
+    import_error = str(e)
+    import_traceback = traceback.format_exc()
+    print(f"⚠️ Could not import main app: {import_error}")
+    print(f"⚠️ Full traceback: {import_traceback}")
     
     # Fallback to simple Flask app for debugging
     app = Flask(__name__)
@@ -33,8 +38,8 @@ except Exception as e:
             "message": "🎉 Event Ticketing App - Vercel Deployment (Debug Mode)",
             "status": "fallback_mode", 
             "platform": "vercel",
-            "error": str(e),
-            "traceback": traceback.format_exc(),
+            "error": import_error,
+            "traceback": import_traceback,
             "environment_vars": {
                 "DATABASE_URL": "✅ Set" if os.getenv('DATABASE_URL') else "❌ Missing",
                 "SECRET_KEY": "✅ Set" if os.getenv('SECRET_KEY') else "❌ Missing", 
