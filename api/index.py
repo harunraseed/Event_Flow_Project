@@ -10,7 +10,9 @@ if not os.getenv('FLASK_ENV'):
     os.environ['FLASK_ENV'] = 'production'
 
 # Add parent directory to path to import the main app
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, parent_dir)
+sys.path.insert(0, '/var/task')  # Vercel specific path
 
 # Initialize app variable
 app = None
@@ -20,8 +22,8 @@ import_traceback = None
 
 try:
     # Try to import the main Flask app
-    from app import app as main_app
-    app = main_app
+    import app as main_app_module
+    app = main_app_module.app
     print("✅ Successfully imported main Flask app")
 except Exception as e:
     import_error = str(e)
