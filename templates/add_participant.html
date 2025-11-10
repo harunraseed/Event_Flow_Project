@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+
+{% block title %}Add Participant - {{ event.name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{{ url_for('event_dashboard', event_id=event.id) }}">{{ event.name }}</a></li>
+                <li class="breadcrumb-item active">Add Participant</li>
+            </ol>
+        </nav>
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="dashboard-title">
+                <i class="bi bi-person-plus"></i> Add Participant
+            </h1>
+            <a href="{{ url_for('event_dashboard', event_id=event.id) }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8 col-xl-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-person-plus"></i> Add New Participant to {{ event.name }}
+                </h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" id="addParticipantForm">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        {{ form.name.label(class="form-label") }}
+                        <i class="bi bi-person"></i>
+                        {{ form.name(class="form-control") }}
+                        {% if form.name.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.name.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="form-text">Enter the participant's complete name as it should appear on certificates.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.email.label(class="form-label") }}
+                        <i class="bi bi-envelope"></i>
+                        {{ form.email(class="form-control") }}
+                        {% if form.email.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.email.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="form-text">This email will be used for sending tickets and certificates.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            {{ form.check_in_immediately(class="form-check-input") }}
+                            {{ form.check_in_immediately.label(class="form-check-label") }}
+                        </div>
+                        <div class="form-text">Check this to automatically mark the participant as checked in.</div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>Note:</strong> A unique ticket number will be automatically generated for this participant.
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('event_dashboard', event_id=event.id) }}" 
+                           class="btn btn-outline-secondary me-md-2">
+                            <i class="bi bi-x-circle"></i> Cancel
+                        </a>
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4 col-xl-6">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="card-title mb-0">
+                    <i class="bi bi-info-circle"></i> Event Information
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <strong>Event:</strong> {{ event.name }}<br>
+                    <strong>Date:</strong> {{ event.date.strftime('%B %d, %Y') }}<br>
+                    <strong>Alias:</strong> <code>{{ event.alias_name }}</code><br>
+                    {% if event.location %}
+                    <strong>Location:</strong> {{ event.location }}<br>
+                    {% endif %}
+                </div>
+                
+                <div class="alert alert-light">
+                    <h6><i class="bi bi-people"></i> Current Participants</h6>
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <div class="fs-4 fw-bold text-primary">{{ event.total_participants }}</div>
+                            <small class="text-muted">Total</small>
+                        </div>
+                        <div class="col-6">
+                            <div class="fs-4 fw-bold text-success">{{ event.checked_in_count }}</div>
+                            <small class="text-muted">Checked In</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="alert alert-warning">
+                    <small>
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <strong>Tip:</strong> For adding multiple participants at once, consider using the 
+                        <a href="{{ url_for('upload_participants', event_id=event.id) }}" class="alert-link">CSV Upload</a> feature.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+$(document).ready(function() {
+    // Form validation and enhancement
+    $('#addParticipantForm').on('submit', function(e) {
+        var name = $('#name').val().trim();
+        var email = $('#email').val().trim();
+        
+        if (!name || !email) {
+            e.preventDefault();
+            showAlert('Please fill in all required fields.', 'error');
+            return false;
+        }
+        
+        // Show loading state
+        var submitBtn = $(this).find('button[type="submit"]');
+        submitBtn.prop('disabled', true);
+        submitBtn.html('<span class="spinner-border spinner-border-sm"></span> Adding Participant...');
+    });
+    
+    // Auto-format name (title case)
+    $('#name').on('blur', function() {
+        var name = $(this).val();
+        if (name) {
+            // Convert to title case
+            var formatted = name.toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+            $(this).val(formatted);
+        }
+    });
+    
+    // Email validation feedback
+    $('#email').on('blur', function() {
+        var email = $(this).val();
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        
+        if (email && !emailRegex.test(email)) {
+            $(this).addClass('is-invalid');
+            if (!$(this).next('.invalid-feedback').length) {
+                $(this).after('<div class="invalid-feedback">Please enter a valid email address.</div>');
+            }
+        } else {
+            $(this).removeClass('is-invalid');
+            $(this).next('.invalid-feedback').remove();
+        }
+    });
+});
+
+function showAlert(message, type) {
+    var alertClass = type === 'error' ? 'alert-danger' : 'alert-' + type;
+    var alertHtml = `
+        <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+            <i class="bi bi-${type === 'error' ? 'exclamation-triangle' : 'info-circle'}"></i>
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    // Insert at the top of the form card
+    $('.card-body').prepend(alertHtml);
+    
+    // Scroll to top
+    $('html, body').animate({scrollTop: 0}, 300);
+}
+</script>
+{% endblock %}

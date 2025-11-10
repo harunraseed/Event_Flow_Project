@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Participant - {{ event.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('event_dashboard', event_id=event.id) }}">{{ event.name }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Edit Participant</li>
+        </ol>
+    </nav>
+
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col">
+            <h2>
+                <i class="bi bi-pencil text-primary"></i>
+                Edit Participant
+            </h2>
+            <p class="text-muted">Update participant information for <strong>{{ event.name }}</strong></p>
+        </div>
+    </div>
+
+    <!-- Current Participant Info -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h6 class="card-title">Current Information</h6>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <strong>Name:</strong><br>
+                            <span class="text-muted">{{ participant.name }}</span>
+                        </div>
+                        <div class="col-md-3">
+                            <strong>Email:</strong><br>
+                            <span class="text-muted">{{ participant.email }}</span>
+                        </div>
+                        <div class="col-md-3">
+                            <strong>Ticket Number:</strong><br>
+                            <code>{{ participant.ticket_number }}</code>
+                        </div>
+                        <div class="col-md-3">
+                            <strong>Status:</strong><br>
+                            {% if participant.checked_in %}
+                                <span class="badge bg-success">Checked In</span>
+                            {% else %}
+                                <span class="badge bg-warning">Not Checked In</span>
+                            {% endif %}
+                            
+                            {% if participant.email_sent %}
+                                <span class="badge bg-success">Email Sent</span>
+                            {% else %}
+                                <span class="badge bg-light text-dark">Email Pending</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Form -->
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-person-gear"></i>
+                        Edit Participant Details
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        
+                        <!-- Name Field -->
+                        <div class="mb-3">
+                            {{ form.name.label(class="form-label") }}
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-person"></i>
+                                </span>
+                                {{ form.name(class="form-control") }}
+                            </div>
+                            {% if form.name.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.name.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Email Field -->
+                        <div class="mb-3">
+                            {{ form.email.label(class="form-label") }}
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-envelope"></i>
+                                </span>
+                                {{ form.email(class="form-control") }}
+                            </div>
+                            {% if form.email.errors %}
+                                <div class="text-danger small mt-1">
+                                    {% for error in form.email.errors %}
+                                        <div>{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Status Fields -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="form-check form-switch">
+                                    {{ form.checked_in(class="form-check-input") }}
+                                    {{ form.checked_in.label(class="form-check-label") }}
+                                </div>
+                                <small class="text-muted">Whether the participant has checked in to the event</small>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-check form-switch">
+                                    {{ form.email_sent(class="form-check-input") }}
+                                    {{ form.email_sent.label(class="form-check-label") }}
+                                </div>
+                                <small class="text-muted">Whether the ticket email has been sent</small>
+                            </div>
+                        </div>
+
+                        <!-- Warning Note -->
+                        <div class="alert alert-warning" role="alert">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            <strong>Note:</strong> Be careful when modifying email addresses and status flags. 
+                            Changes will affect email sending and reporting.
+                        </div>
+
+                        <!-- Submit Buttons -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ url_for('event_dashboard', event_id=event.id) }}" 
+                               class="btn btn-secondary me-md-2">
+                                <i class="bi bi-arrow-left"></i> Cancel
+                            </a>
+                            {{ form.submit(class="btn btn-primary") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Info Sidebar -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="bi bi-info-circle"></i>
+                        Additional Information
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong>Ticket Number:</strong><br>
+                        <code>{{ participant.ticket_number }}</code>
+                        <small class="text-muted d-block">Cannot be changed</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <strong>Created:</strong><br>
+                        {{ participant.created_at.strftime('%B %d, %Y at %I:%M %p') }}
+                    </div>
+                    
+                    {% if participant.email_sent_at %}
+                    <div class="mb-3">
+                        <strong>Email Sent:</strong><br>
+                        {{ participant.email_sent_at.strftime('%B %d, %Y at %I:%M %p') }}
+                    </div>
+                    {% endif %}
+                    
+                    {% if participant.checkin_time %}
+                    <div class="mb-3">
+                        <strong>Check-in Time:</strong><br>
+                        {{ participant.checkin_time.strftime('%B %d, %Y at %I:%M %p') }}
+                    </div>
+                    {% endif %}
+
+                    {% if participant.has_certificate %}
+                    <div class="mb-3">
+                        <strong>Certificate:</strong><br>
+                        <span class="badge bg-info">Generated</span>
+                        <small class="text-muted d-block">Certificate is available</small>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="bi bi-lightning"></i>
+                        Quick Actions
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('send_single_email', participant_id=participant.id) }}" 
+                           class="btn btn-outline-info btn-sm">
+                            <i class="bi bi-envelope"></i> Send Ticket Email
+                        </a>
+                        
+                        {% if participant.has_certificate %}
+                        <a href="{{ url_for('reissue_certificate_single', participant_id=participant.id) }}" 
+                           class="btn btn-outline-warning btn-sm">
+                            <i class="bi bi-award"></i> Send Certificate
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

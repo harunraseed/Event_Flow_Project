@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Ticket for {{ event.name }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-radius: 10px 10px 0 0;
+        }
+        .event-logo {
+            max-width: 120px;
+            max-height: 120px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            background: white;
+            padding: 10px;
+        }
+        .content {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 0 0 10px 10px;
+        }
+        .ticket-box {
+            background: white;
+            border: 2px dashed #007bff;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            border-radius: 8px;
+        }
+        .ticket-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+            font-family: 'Courier New', monospace;
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 5px;
+            display: inline-block;
+            margin: 10px 0;
+        }
+        .event-details {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .detail-label {
+            font-weight: bold;
+            color: #555;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #666;
+            font-size: 14px;
+        }
+        .important-note {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        {% if event.logo_filename %}
+            <img src="cid:event_logo" 
+                 alt="{{ event.name }} Logo" 
+                 class="event-logo"
+                 style="max-width: 120px; max-height: 120px; margin-bottom: 15px; border-radius: 8px; background: white; padding: 10px; display: block; margin-left: auto; margin-right: auto;">
+        {% endif %}
+        <h1>🎫 Your Event Ticket</h1>
+        <p>You're registered for {{ event.name }}!</p>
+    </div>
+    
+    <div class="content">
+        <p>Dear {{ participant.name }},</p>
+        
+        <p>Thank you for registering for <strong>{{ event.name }}</strong>. Your registration has been confirmed and your ticket is ready!</p>
+        
+        <div class="ticket-box">
+            <h3>🎟️ {{ event.name }} Ticket</h3>
+            <div class="ticket-number">{{ participant.ticket_number }}</div>
+            <p><small>Please save this ticket number for your records</small></p>
+        </div>
+        
+        <div class="event-details">
+            <h3>📅 Event Details</h3>
+            <div class="detail-row">
+                <span class="detail-label">Event Name:</span>
+                <span>{{ event.name }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Date:</span>
+                <span>{{ event.date.strftime('%A, %B %d, %Y') }}</span>
+            </div>
+            {% if event.time %}
+            <div class="detail-row">
+                <span class="detail-label">Time:</span>
+                <span>{{ event.time.strftime('%I:%M %p') }}</span>
+            </div>
+            {% endif %}
+            {% if event.location %}
+            <div class="detail-row">
+                <span class="detail-label">Location:</span>
+                <span>{{ event.location }} 
+                    {% if event.maps_link %}
+                    <a href="{{ event.maps_link }}" style="color: #007bff; text-decoration: none;">📍 View on Maps</a>
+                    {% endif %}
+                </span>
+            </div>
+            {% endif %}
+            <div class="detail-row">
+                <span class="detail-label">Participant Name:</span>
+                <span>{{ participant.name }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Email:</span>
+                <span>{{ participant.email }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Ticket Number:</span>
+                <span><strong>{{ participant.ticket_number }}</strong></span>
+            </div>
+            {% if event.description %}
+            <div class="detail-row">
+                <span class="detail-label">Description:</span>
+                <span>{{ event.description }}</span>
+            </div>
+            {% endif %}
+        </div>
+        
+        {% if event.instructions %}
+        <div class="event-details" style="margin-top: 25px;">
+            <h3>📋 Event Instructions</h3>
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #28a745; margin: 15px 0; white-space: pre-line; line-height: 1.6; font-size: 14px;">{{ event.instructions }}</div>
+        </div>
+        {% endif %}
+        
+        <div class="important-note">
+            <strong>⚠️ Important:</strong> Please bring this ticket number with you to the event. You may be asked to present it during check-in.
+        </div>
+        
+        <p>We look forward to seeing you at the event!</p>
+        
+        <p>Best regards,<br>
+        {% if event.organizer_name %}{{ event.organizer_name }}{% else %}The Event Management Team{% endif %}</p>
+    </div>
+    
+    <div class="footer">
+        <p>This is an automated email. Please do not reply to this message.</p>
+        <p>© 2025 Event Ticketing System</p>
+    </div>
+</body>
+</html>

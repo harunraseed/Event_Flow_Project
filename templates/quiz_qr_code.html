@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% block title %}QR Code - {{ quiz.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">
+                        <i class="fas fa-qrcode"></i> Quiz QR Code
+                    </h4>
+                    <p class="mb-0 mt-2">{{ quiz.name }}</p>
+                </div>
+                <div class="card-body text-center">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <!-- QR Code -->
+                            <div id="qrcode" class="mb-3">
+                                <img src="data:image/png;base64,{{ qr_code_base64 }}" 
+                                     alt="Quiz QR Code" 
+                                     class="img-fluid"
+                                     style="max-width: 250px; border: 2px solid #007bff; border-radius: 10px;">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="text-primary mb-3">Quiz Information</h5>
+                            <div class="text-start">
+                                <p><strong>Quiz Name:</strong> {{ quiz.name }}</p>
+                                <p><strong>Event:</strong> {{ quiz.event.name }}</p>
+                                <p><strong>Questions:</strong> {{ quiz.questions|length }}</p>
+                                <p><strong>Time per Question:</strong> {{ quiz.timer_per_question }} seconds</p>
+                            </div>
+                            
+                            <hr>
+                            
+                            <h6 class="text-success mb-3">Instructions for Participants</h6>
+                            <div class="text-start small">
+                                <ol>
+                                    <li>Scan the QR code with your phone camera</li>
+                                    <li>Enter your name and email address</li>
+                                    <li>Wait for the quiz to start</li>
+                                    <li>Answer questions within the time limit</li>
+                                    <li>View results and winners at the end</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="row">
+                        <div class="col-12">
+                            <h6>Quiz URL:</h6>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" value="{{ quiz_url }}" readonly id="quizUrl">
+                                <button class="btn btn-outline-secondary" type="button" onclick="copyUrl()">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                                <a href="{{ quiz_url }}" class="btn btn-info me-md-2" target="_blank">
+                                    <i class="fas fa-external-link-alt"></i> Open Quiz
+                                </a>
+                                <a href="{{ url_for('quiz_dashboard', event_id=quiz.event.id, quiz_id=quiz.id) }}" class="btn btn-secondary me-md-2">
+                                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                                </a>
+                                <button class="btn btn-success" onclick="window.print()">
+                                    <i class="fas fa-print"></i> Print QR Code
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Display Instructions -->
+            <div class="card shadow mt-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle"></i> How to Use This QR Code
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-primary">For Event Organizers:</h6>
+                            <ul>
+                                <li>Display this QR code on a projector or large screen</li>
+                                <li>Ask participants to scan with their mobile phones</li>
+                                <li>Monitor the quiz dashboard for real-time participation</li>
+                                <li>Announce winners at the end using the results page</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-success">For Participants:</h6>
+                            <ul>
+                                <li>Open your phone's camera app</li>
+                                <li>Point at the QR code to scan</li>
+                                <li>Follow the link that appears</li>
+                                <li>Enter your details and join the quiz</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyUrl() {
+    const urlInput = document.getElementById('quizUrl');
+    urlInput.select();
+    document.execCommand('copy');
+    
+    // Show feedback
+    const button = event.target.closest('button');
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+    button.classList.remove('btn-outline-secondary');
+    button.classList.add('btn-success');
+    
+    setTimeout(() => {
+        button.innerHTML = originalText;
+        button.classList.remove('btn-success');
+        button.classList.add('btn-outline-secondary');
+    }, 2000);
+}
+
+// Generate QR code using a JavaScript library
+// You can use qrcode.js or similar library for client-side QR generation
+// For now, showing placeholder
+</script>
+
+<!-- Print styles -->
+<style media="print">
+    .btn, .card-header, .alert { display: none !important; }
+    .container { max-width: 100% !important; }
+    .card { box-shadow: none !important; border: 1px solid #ddd !important; }
+    #qrcode { page-break-inside: avoid; }
+</style>
+{% endblock %}

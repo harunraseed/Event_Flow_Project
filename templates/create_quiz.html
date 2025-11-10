@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Create Quiz - {{ event.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-quiz"></i> Create Quiz for {{ event.name }}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="mb-3">
+                            {{ form.name.label(class="form-label fw-bold") }}
+                            {{ form.name(class="form-control") }}
+                            {% if form.name.errors %}
+                                <div class="text-danger mt-1">
+                                    {% for error in form.name.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.timer_per_question.label(class="form-label fw-bold") }}
+                            {{ form.timer_per_question(class="form-select") }}
+                            <div class="form-text">
+                                <i class="fas fa-clock"></i> Choose how much time participants get per question
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ url_for('event_dashboard', event_id=event.id) }}" class="btn btn-secondary me-md-2">
+                                <i class="fas fa-arrow-left"></i> Back to Event
+                            </a>
+                            {{ form.submit(class="btn btn-primary") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Quiz Information -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h6 class="card-title text-primary">
+                        <i class="fas fa-info-circle"></i> How Quiz Works
+                    </h6>
+                    <ul class="list-unstyled mb-0">
+                        <li><i class="fas fa-check text-success me-2"></i> Create your quiz with a name and timer</li>
+                        <li><i class="fas fa-check text-success me-2"></i> Upload questions using the provided CSV template</li>
+                        <li><i class="fas fa-check text-success me-2"></i> Generate QR code for participants to scan</li>
+                        <li><i class="fas fa-check text-success me-2"></i> Participants join with name and email</li>
+                        <li><i class="fas fa-check text-success me-2"></i> Real-time quiz with timed questions</li>
+                        <li><i class="fas fa-check text-success me-2"></i> Winners ranked by correct answers and speed</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

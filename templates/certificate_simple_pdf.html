@@ -1,0 +1,518 @@
+<!DOCTYPE html><!DOCTYPE html>
+
+<html lang="en"><html lang="en">
+
+<head><head>
+
+    <meta charset="UTF-8">    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Certificate - {{ participant.name }}</title>    <title>Certificate - {{ participant.name }}</title>
+
+    <style>    <style>
+
+        * {        * {
+
+            margin: 0;            margin: 0;
+
+            padding: 0;            padding: 0;
+
+            box-sizing: border-box;            box-sizing: border-box;
+
+        }        }
+
+                
+
+        body {        body {
+
+            font-family: Arial, sans-serif;            font-family: Arial, sans-serif;
+
+            background: white;            background: white;
+
+            min-height: 100vh;            min-height: 100vh;
+
+            display: flex;            display: flex;
+
+            align-items: center;            align-items: center;
+
+            justify-content: center;            justify-content: center;
+
+            padding: 20px;            padding: 20px;
+
+        }            position: relative;
+
+                }
+
+        .certificate-container {        
+
+            background: white;        /* Certificate Number Watermark */
+
+            border: 2px solid #0078d4;        .watermark {
+
+            border-radius: 8px;            position: fixed;
+
+            max-width: 800px;            top: 50%;
+
+            width: 100%;            left: 50%;
+
+            min-height: 600px;            transform: translate(-50%, -50%) rotate(-45deg);
+
+            position: relative;            font-size: 3rem;
+
+            padding: 40px;            color: rgba(0, 120, 212, 0.1);
+
+            text-align: center;            font-weight: bold;
+
+        }            z-index: 1;
+
+                    pointer-events: none;
+
+        .certificate-header {            white-space: nowrap;
+
+            margin-bottom: 30px;        }
+
+        }        
+
+                .certificate-container {
+
+        .certificate-title {            background: white;
+
+            font-size: 2.5rem;            border: 3px solid #0078d4;
+
+            font-weight: bold;            border-radius: 8px;
+
+            color: #0078d4;            max-width: 800px;
+
+            margin-bottom: 10px;            width: 100%;
+
+            text-transform: uppercase;            min-height: 600px;
+
+            letter-spacing: 2px;            position: relative;
+
+        }            z-index: 2;
+
+                    padding: 0;
+
+        .certificate-subtitle {        }
+
+            font-size: 1.2rem;        
+
+            color: #666;        .certificate-content {
+
+            font-weight: 300;            padding: 40px 50px;
+
+        }            text-align: center;
+
+                    position: relative;
+
+        .certificate-body {            height: 100%;
+
+            margin: 40px 0;            display: flex;
+
+            line-height: 1.8;            flex-direction: column;
+
+        }            justify-content: space-between;
+
+                    min-height: 600px;
+
+        .certificate-text {        }
+
+            font-size: 1.1rem;        
+
+            color: #333;        /* Header */
+
+            margin-bottom: 20px;        .certificate-header {
+
+        }            text-align: center;
+
+                    margin-bottom: 30px;
+
+        .participant-name {            border-bottom: 2px solid #e5e5e5;
+
+            font-size: 2rem;            padding-bottom: 20px;
+
+            font-weight: bold;        }
+
+            color: #0078d4;        
+
+            margin: 20px 0;        .certificate-title {
+
+            padding: 10px 0;            font-family: Arial, sans-serif;
+
+            border-bottom: 2px solid #0078d4;            font-size: 2.5rem;
+
+            display: inline-block;            font-weight: bold;
+
+            min-width: 300px;            color: #0078d4;
+
+        }            margin: 20px 0 10px 0;
+
+                    text-transform: uppercase;
+
+        .event-name {            letter-spacing: 3px;
+
+            font-size: 1.3rem;        }
+
+            font-weight: bold;        
+
+            color: #333;        .certificate-subtitle {
+
+            margin: 15px 0;            font-size: 1.2rem;
+
+        }            color: #323130;
+
+                    margin-bottom: 20px;
+
+        .event-details {            font-weight: normal;
+
+            font-size: 1rem;            text-transform: uppercase;
+
+            color: #666;            letter-spacing: 1px;
+
+            margin: 10px 0;        }
+
+        }        
+
+                /* Participant section */
+
+        .certificate-footer {        .participant-section {
+
+            margin-top: 50px;            margin: 30px 0;
+
+            padding-top: 30px;        }
+
+            border-top: 1px solid #ddd;        
+
+        }        .participant-label {
+
+                    font-size: 1rem;
+
+        .signature-section {            color: #605e5c;
+
+            display: flex;            margin-bottom: 15px;
+
+            justify-content: space-between;            text-transform: uppercase;
+
+            align-items: center;            letter-spacing: 1px;
+
+            max-width: 600px;        }
+
+            margin: 0 auto;        
+
+        }        .participant-name {
+
+                    font-family: Arial, sans-serif;
+
+        .signature-item {            font-size: 2.5rem;
+
+            text-align: center;            font-weight: bold;
+
+            flex: 1;            color: #323130;
+
+        }            margin: 0 0 15px 0;
+
+                    position: relative;
+
+        .signature-line {            display: inline-block;
+
+            border-bottom: 2px solid #333;            border-bottom: 3px solid #0078d4;
+
+            margin-bottom: 10px;            padding-bottom: 10px;
+
+            height: 50px;        }
+
+            width: 200px;        
+
+            margin: 0 auto 10px;        /* Certificate description */
+
+        }        .certificate-description {
+
+                    font-size: 1.1rem;
+
+        .signature-label {            line-height: 1.6;
+
+            font-size: 0.9rem;            color: #323130;
+
+            color: #666;            max-width: 600px;
+
+            font-weight: 500;            margin: 30px auto;
+
+        }            font-weight: normal;
+
+                }
+
+        .certificate-number {        
+
+            position: absolute;        .event-highlight {
+
+            top: 15px;            font-weight: bold;
+
+            right: 15px;            color: #0078d4;
+
+            font-size: 0.8rem;        }
+
+            color: #999;        
+
+        }        .organizer-highlight {
+
+                    font-weight: bold;
+
+        .issue-date {            color: #107c10;
+
+            position: absolute;        }
+
+            bottom: 15px;        
+
+            left: 15px;        .location-highlight {
+
+            font-size: 0.8rem;            font-weight: bold;
+
+            color: #999;            color: #5c2d91;
+
+        }        }
+
+                
+
+        /* Print styles */        /* Footer */
+
+        @media print {        .certificate-footer {
+
+            body {            margin-top: auto;
+
+                margin: 0;            border-top: 1px solid #e5e5e5;
+
+                padding: 0;            padding-top: 30px;
+
+            }        }
+
+                    
+
+            .certificate-container {        .signatures-section {
+
+                border: 2px solid #0078d4;            display: flex;
+
+                box-shadow: none;            justify-content: space-around;
+
+                margin: 0;            align-items: flex-end;
+
+                width: 100%;            margin: 20px 0;
+
+                max-width: none;            gap: 40px;
+
+                min-height: auto;        }
+
+            }        
+
+        }        .signature-item {
+
+    </style>            text-align: center;
+
+</head>            min-width: 150px;
+
+<body>            flex: 1;
+
+    <div class="certificate-container">        }
+
+        {% if certificate %}        
+
+        <div class="certificate-number">Certificate No: {{ certificate.certificate_number }}</div>        .signature-line {
+
+        {% endif %}            border-top: 2px solid #323130;
+
+                    margin: 15px auto;
+
+        <div class="certificate-header">            width: 120px;
+
+            <h1 class="certificate-title">Certificate</h1>        }
+
+            <h2 class="certificate-subtitle">of {{ certificate.certificate_type|title if certificate else 'Participation' }}</h2>        
+
+        </div>        .signature-name {
+
+                    font-weight: bold;
+
+        <div class="certificate-body">            color: #323130;
+
+            <p class="certificate-text">This is to certify that</p>            font-size: 1rem;
+
+                        margin-bottom: 5px;
+
+            <div class="participant-name">{{ participant.name }}</div>        }
+
+                    
+
+            <p class="certificate-text">has successfully {{ 'completed' if certificate and certificate.certificate_type == 'completion' else 'participated in' }}</p>        .signature-title {
+
+                        color: #605e5c;
+
+            <div class="event-name">{{ event.name }}</div>            font-size: 0.9rem;
+
+                        text-transform: uppercase;
+
+            {% if event.start_date %}            letter-spacing: 0.5px;
+
+            <div class="event-details">        }
+
+                Conducted on {{ event.start_date.strftime('%B %d, %Y') }}        
+
+                {% if event.end_date and event.end_date != event.start_date %}        /* Certificate details footer */
+
+                - {{ event.end_date.strftime('%B %d, %Y') }}        .certificate-details {
+
+                {% endif %}            display: flex;
+
+            </div>            justify-content: space-between;
+
+            {% endif %}            align-items: center;
+
+                        padding: 15px 0;
+
+            {% if event.location %}            font-size: 0.9rem;
+
+            <div class="event-details">at {{ event.location }}</div>            color: #605e5c;
+
+            {% endif %}            border-top: 1px solid #e5e5e5;
+
+        </div>            margin-top: 15px;
+
+                }
+
+        <div class="certificate-footer">        
+
+            <div class="signature-section">        .certificate-number {
+
+                <div class="signature-item">            font-weight: bold;
+
+                    <div class="signature-line"></div>            color: #0078d4;
+
+                    <div class="signature-label">Authorized Signature</div>        }
+
+                </div>        
+
+                        .certificate-date {
+
+                <div class="signature-item">            font-weight: bold;
+
+                    <div class="signature-line"></div>            color: #0078d4;
+
+                    <div class="signature-label">Event Organizer</div>        }
+
+                </div>        
+
+            </div>        /* Corner accents */
+
+        </div>        .corner-accent {
+
+                    position: absolute;
+
+        {% if certificate and certificate.issued_date %}            width: 40px;
+
+        <div class="issue-date">Issued: {{ certificate.issued_date.strftime('%B %d, %Y') }}</div>            height: 40px;
+
+        {% endif %}        }
+
+    </div>        
+
+</body>        .corner-accent.top-left {
+
+</html>            top: 15px;
+            left: 15px;
+            border-top: 4px solid #0078d4;
+            border-left: 4px solid #0078d4;
+        }
+        
+        .corner-accent.top-right {
+            top: 15px;
+            right: 15px;
+            border-top: 4px solid #0078d4;
+            border-right: 4px solid #0078d4;
+        }
+        
+        .corner-accent.bottom-left {
+            bottom: 15px;
+            left: 15px;
+            border-bottom: 4px solid #0078d4;
+            border-left: 4px solid #0078d4;
+        }
+        
+        .corner-accent.bottom-right {
+            bottom: 15px;
+            right: 15px;
+            border-bottom: 4px solid #0078d4;
+            border-right: 4px solid #0078d4;
+        }
+    </style>
+</head>
+<body>
+    <!-- Certificate Number Watermark -->
+    <div class="watermark">{{ certificate.certificate_number }}</div>
+    
+    <div class="certificate-container">
+        <!-- Corner accents -->
+        <div class="corner-accent top-left"></div>
+        <div class="corner-accent top-right"></div>
+        <div class="corner-accent bottom-left"></div>
+        <div class="corner-accent bottom-right"></div>
+        
+        <div class="certificate-content">
+            <div class="certificate-header">
+                <h1 class="certificate-title">Certificate</h1>
+                <p class="certificate-subtitle">of {{ certificate.certificate_type|title or 'Participation' }}</p>
+            </div>
+            
+            <div class="certificate-body">
+                <div class="participant-section">
+                    <p class="participant-label">This is to certify that</p>
+                    <h2 class="participant-name">{{ participant.name }}</h2>
+                </div>
+                
+                <p class="certificate-description">
+                    has successfully 
+                    {% if certificate.certificate_type == 'completion' %}
+                    <span class="event-highlight">completed</span>
+                    {% elif certificate.certificate_type == 'achievement' %}
+                    <span class="event-highlight">achieved excellence in</span>
+                    {% else %}
+                    <span class="event-highlight">participated in</span>
+                    {% endif %}
+                    the event "<span class="event-highlight">{{ event.name }}</span>"<br>
+                    organized by <span class="organizer-highlight">{{ certificate.organizer_name or 'Azure Developer Community Tamilnadu' }}</span>
+                    {% if certificate.event_location %}
+                    <br>at <span class="location-highlight">{{ certificate.event_location }}</span>
+                    {% endif %}
+                    {% if event.date %}
+                    <br>on <span class="event-highlight">{{ event.date.strftime('%B %d, %Y') }}</span>
+                    {% endif %}.
+                    {% if certificate.event_theme %}
+                    <br>This event focused on <span class="event-highlight">{{ certificate.event_theme }}</span>.
+                    {% endif %}
+                </p>
+            </div>
+            
+            <div class="certificate-footer">
+                <div class="signatures-section">
+                    <!-- Signature 1 -->
+                    <div class="signature-item">
+                        <div class="signature-line"></div>
+                        <div class="signature-name">{{ certificate.signature1_name or 'Authorized Signatory' }}</div>
+                        <div class="signature-title">{{ certificate.signature1_title or 'Microsoft MVP' }}</div>
+                    </div>
+                    
+                    <!-- Signature 2 -->
+                    <div class="signature-item">
+                        <div class="signature-line"></div>
+                        <div class="signature-name">{{ certificate.signature2_name or 'Event Organizer' }}</div>
+                        <div class="signature-title">{{ certificate.signature2_title or 'Microsoft MVP' }}</div>
+                    </div>
+                </div>
+                
+                <div class="certificate-details">
+                    <div class="certificate-number">Certificate No: {{ certificate.certificate_number }}</div>
+                    <div class="certificate-date">Issued: {{ certificate.issued_date.strftime('%B %d, %Y') }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

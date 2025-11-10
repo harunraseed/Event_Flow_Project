@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}Add Quiz Question - {{ quiz.name }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-plus-circle me-2"></i>Add Question to "{{ quiz.name }}"
+                    </h4>
+                </div>
+                
+                <div class="card-body">
+                    <form method="POST">
+                        <!-- Question Text -->
+                        <div class="mb-4">
+                            <label for="question" class="form-label fw-bold">
+                                <i class="fas fa-question-circle me-2"></i>Question Text
+                            </label>
+                            <textarea class="form-control" id="question" name="question" rows="3" 
+                                    placeholder="Enter your question here..." required></textarea>
+                        </div>
+
+                        <!-- Options -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">
+                                <i class="fas fa-list me-2"></i>Answer Options
+                            </label>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="option1" class="form-label">Option A</label>
+                                    <input type="text" class="form-control" id="option1" name="option1" 
+                                           placeholder="Enter option A" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="option2" class="form-label">Option B</label>
+                                    <input type="text" class="form-control" id="option2" name="option2" 
+                                           placeholder="Enter option B" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="option3" class="form-label">Option C</label>
+                                    <input type="text" class="form-control" id="option3" name="option3" 
+                                           placeholder="Enter option C" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="option4" class="form-label">Option D</label>
+                                    <input type="text" class="form-control" id="option4" name="option4" 
+                                           placeholder="Enter option D" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Correct Answer -->
+                        <div class="mb-4">
+                            <label for="correct_answer" class="form-label fw-bold">
+                                <i class="fas fa-check-circle me-2"></i>Correct Answer
+                            </label>
+                            <input type="text" class="form-control" id="correct_answer" name="correct_answer" 
+                                   placeholder="Enter the exact text of the correct answer" required>
+                            <div class="form-text">
+                                <i class="fas fa-info-circle me-1"></i>
+                                This must exactly match one of the options above (case-sensitive)
+                            </div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('quiz_dashboard', event_id=event.id, quiz_id=quiz.id) }}" 
+                               class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Quiz Dashboard
+                            </a>
+                            
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-plus me-2"></i>Add Question
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Help Card -->
+            <div class="card mt-4">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-lightbulb me-2"></i>Tips for Creating Good Quiz Questions
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <ul class="mb-0">
+                        <li>Keep questions clear and concise</li>
+                        <li>Make sure all options are plausible</li>
+                        <li>Avoid "all of the above" or "none of the above" options</li>
+                        <li>Ensure the correct answer is unambiguous</li>
+                        <li>Double-check spelling and grammar</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Auto-fill correct answer when an option is clicked
+document.addEventListener('DOMContentLoaded', function() {
+    const options = ['option1', 'option2', 'option3', 'option4'];
+    const correctAnswerField = document.getElementById('correct_answer');
+    
+    options.forEach(optionId => {
+        const optionField = document.getElementById(optionId);
+        optionField.addEventListener('blur', function() {
+            if (this.value && !correctAnswerField.value) {
+                // If this is the first option filled and correct answer is empty, suggest it
+                correctAnswerField.placeholder = `e.g., "${this.value}"`;
+            }
+        });
+        
+        optionField.addEventListener('click', function() {
+            if (this.value) {
+                correctAnswerField.value = this.value;
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

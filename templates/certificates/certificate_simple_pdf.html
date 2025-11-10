@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate - {{ participant.name }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .certificate-container {
+            background: white;
+            border: 2px solid #0078d4;
+            border-radius: 8px;
+            max-width: 800px;
+            width: 100%;
+            min-height: 600px;
+            position: relative;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .certificate-header {
+            margin-bottom: 30px;
+        }
+        
+        .certificate-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #0078d4;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .certificate-subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            font-weight: 300;
+        }
+        
+        .certificate-body {
+            margin: 40px 0;
+            line-height: 1.8;
+        }
+        
+        .certificate-text {
+            font-size: 1.1rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .participant-name {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #0078d4;
+            margin: 20px 0;
+            padding: 10px 0;
+            border-bottom: 2px solid #0078d4;
+            display: inline-block;
+            min-width: 300px;
+        }
+        
+        .event-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #333;
+            margin: 15px 0;
+        }
+        
+        .event-details {
+            font-size: 1rem;
+            color: #666;
+            margin: 10px 0;
+        }
+        
+        .certificate-footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #ddd;
+        }
+        
+        .signature-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .signature-item {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .signature-line {
+            border-bottom: 2px solid #333;
+            margin-bottom: 10px;
+            height: 50px;
+            width: 200px;
+            margin: 0 auto 10px;
+        }
+        
+        .signature-label {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .certificate-number {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 0.8rem;
+            color: #999;
+        }
+        
+        .issue-date {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            font-size: 0.8rem;
+            color: #999;
+        }
+        
+        /* Print styles */
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            
+            .certificate-container {
+                border: 2px solid #0078d4;
+                box-shadow: none;
+                margin: 0;
+                width: 100%;
+                max-width: none;
+                min-height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="certificate-container">
+        {% if certificate %}
+        <div class="certificate-number">Certificate No: {{ certificate.certificate_number }}</div>
+        {% endif %}
+        
+        <div class="certificate-header">
+            <h1 class="certificate-title">Certificate</h1>
+            <h2 class="certificate-subtitle">of {{ certificate.certificate_type|title if certificate else 'Participation' }}</h2>
+        </div>
+        
+        <div class="certificate-body">
+            <p class="certificate-text">This is to certify that</p>
+            
+            <div class="participant-name">{{ participant.name }}</div>
+            
+            <p class="certificate-text">has successfully {{ 'completed' if certificate and certificate.certificate_type == 'completion' else 'participated in' }}</p>
+            
+            <div class="event-name">{{ event.name }}</div>
+            
+            {% if event.start_date %}
+            <div class="event-details">
+                Conducted on {{ event.start_date.strftime('%B %d, %Y') }}
+                {% if event.end_date and event.end_date != event.start_date %}
+                - {{ event.end_date.strftime('%B %d, %Y') }}
+                {% endif %}
+            </div>
+            {% endif %}
+            
+            {% if event.location %}
+            <div class="event-details">at {{ event.location }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="certificate-footer">
+            <div class="signature-section">
+                <div class="signature-item">
+                    <div class="signature-line"></div>
+                    <div class="signature-label">Authorized Signature</div>
+                </div>
+                
+                <div class="signature-item">
+                    <div class="signature-line"></div>
+                    <div class="signature-label">Event Organizer</div>
+                </div>
+            </div>
+        </div>
+        
+        {% if certificate and certificate.issued_date %}
+        <div class="issue-date">Issued: {{ certificate.issued_date.strftime('%B %d, %Y') }}</div>
+        {% endif %}
+    </div>
+</body>
+</html>
