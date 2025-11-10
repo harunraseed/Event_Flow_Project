@@ -1,14 +1,24 @@
-# Core Flask and extensions# Core Flask and extensions
+# Minimum requirements for Vercel deployment# Core Flask and extensions# Core Flask and extensions
 
-Flask==3.0.0Flask==3.0.0
+Flask==3.0.0
 
-Flask-SQLAlchemy==3.1.1Flask-SQLAlchemy==3.1.1
+Werkzeug==3.0.1Flask==3.0.0Flask==3.0.0
 
-Flask-Migrate==4.0.5Flask-Migrate==4.0.5
 
-Flask-WTF==1.2.1Flask-WTF==1.2.1
 
-Flask-Mail==0.9.1Flask-Mail==0.9.1
+# Database supportFlask-SQLAlchemy==3.1.1Flask-SQLAlchemy==3.1.1
+
+Flask-SQLAlchemy==3.1.1
+
+psycopg2-binary==2.9.9Flask-Migrate==4.0.5Flask-Migrate==4.0.5
+
+
+
+# UtilitiesFlask-WTF==1.2.1Flask-WTF==1.2.1
+
+python-dotenv==1.0.0
+
+requests==2.31.0Flask-Mail==0.9.1Flask-Mail==0.9.1
 
 WTForms==3.1.1WTForms==3.1.1
 

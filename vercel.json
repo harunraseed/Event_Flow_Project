@@ -8,22 +8,33 @@
   ],
   "routes": [
     {
-      "src": "/static/(.*)",
-      "dest": "/static/$1"
+      "src": "/api/(.*)",
+      "dest": "api/index.py"
+    },
+    {
+      "src": "/health",
+      "dest": "api/index.py"
+    },
+    {
+      "src": "/test-db", 
+      "dest": "api/index.py"
+    },
+    {
+      "src": "/debug/(.*)",
+      "dest": "api/index.py"
+    },
+    {
+      "src": "/",
+      "dest": "api/index.py"
     },
     {
       "src": "/(.*)",
       "dest": "api/index.py"
     }
   ],
-  "env": {
-    "FLASK_ENV": "production",
-    "PYTHONPATH": "."
-  },
   "functions": {
     "api/index.py": {
-      "maxDuration": 30,
-      "memory": 1024
+      "maxDuration": 30
     }
   }
 }
