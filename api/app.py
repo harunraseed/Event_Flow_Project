@@ -16,10 +16,10 @@ if database_url:
     # Fix for Vercel/Supabase connectivity issues
     if database_url.startswith('postgresql://'):
         database_url = database_url.replace('postgresql://', 'postgresql+psycopg2://', 1)
-    # Add SSL and IPv4 preference for Supabase
+    # Add SSL requirement for Supabase (remove invalid parameter)
     if 'sslmode' not in database_url:
         separator = '&' if '?' in database_url else '?'
-        database_url += f'{separator}sslmode=require&prefer_server_ciphers=off'
+        database_url += f'{separator}sslmode=require'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -27,7 +27,6 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     'pool_pre_ping': True,
     'pool_recycle': 300,
     'connect_args': {
-        'sslmode': 'require',
         'connect_timeout': 10
     }
 }
