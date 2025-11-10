@@ -21,22 +21,10 @@ import_error = None
 import_traceback = None
 
 try:
-    # Try multiple import strategies
-    try:
-        # Strategy 1: Direct import
-        from app import app as main_app
-        app = main_app
-        print("✅ Successfully imported main Flask app (direct)")
-    except ImportError:
-        # Strategy 2: Import as module
-        import app as main_app_module
-        app = main_app_module.app
-        print("✅ Successfully imported main Flask app (module)")
-    except ImportError:
-        # Strategy 3: From api directory
-        from api.app import app as main_app
-        app = main_app
-        print("✅ Successfully imported main Flask app (api.app)")
+    # Try to import the simplified app from api directory
+    from api.app import app as main_app
+    app = main_app
+    print("✅ Successfully imported simplified Flask app")
 except Exception as e:
     import_error = str(e)
     import_traceback = traceback.format_exc()
