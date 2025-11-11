@@ -60,7 +60,7 @@ def test_db_connection():
     except Exception as e:
         return False, str(e)
 
-# Simple database models for Vercel
+# Simple database models for Vercel - matching actual Supabase schema
 class Event(db.Model):
     __tablename__ = 'events'
     id = db.Column(db.Integer, primary_key=True)
@@ -68,7 +68,6 @@ class Event(db.Model):
     description = db.Column(db.Text)
     date = db.Column(db.DateTime, nullable=False)
     location = db.Column(db.String(255))
-    status = db.Column(db.String(20), default='active')
     created_at = db.Column(db.DateTime, default=db.func.now())
 
 class Participant(db.Model):
@@ -198,8 +197,7 @@ def list_events():
                 "name": event.name,
                 "description": event.description,
                 "date": event.date.isoformat() if event.date else None,
-                "location": event.location,
-                "status": event.status
+                "location": event.location
             } for event in events]
         })
     except Exception as e:
@@ -218,8 +216,7 @@ def event_details(event_id):
                 "name": event.name,
                 "description": event.description,
                 "date": event.date.isoformat() if event.date else None,
-                "location": event.location,
-                "status": event.status
+                "location": event.location
             },
             "participants_count": len(participants),
             "participants": [{
