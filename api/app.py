@@ -95,14 +95,33 @@ def home():
             # Test basic connection
             db_connected, db_message = test_db_connection()
             if db_connected:
-                # If connected, try to query events
-                events = Event.query.all()
+                # First, let's inspect the actual table structure
+                with db.engine.connect() as connection:
+                    # Get actual column names from the database
+                    result = connection.execute(db.text("SELECT column_name FROM information_schema.columns WHERE table_name = 'events' ORDER BY ordinal_position"))
+                    actual_columns = [row[0] for row in result.fetchall()]
+                    print(f"📊 Actual columns in events table: {actual_columns}")
+                
+                # If connected, try to query events with only basic columns
+                try:
+                    # Use raw SQL to avoid SQLAlchemy column mapping issues
+                    with db.engine.connect() as connection:
+                        result = connection.execute(db.text("SELECT id, name, description, date, location, created_at FROM events"))
+                        events_data = result.fetchall()
+                        events_count = len(events_data)
+                except Exception as e:
+                    # If that fails, try even simpler query
+                    with db.engine.connect() as connection:
+                        result = connection.execute(db.text("SELECT COUNT(*) FROM events"))
+                        events_count = result.fetchone()[0]
+                        events_data = []
                 return jsonify({
                     "message": "🎉 Event Ticketing App - Fully Operational!",
                     "status": "success",
                     "platform": "vercel",
                     "database": "connected",
-                    "events_count": len(events),
+                    "events_count": events_count,
+                    "actual_columns": actual_columns,
                     "database_info": db_message,
                     "environment": {
                         "DATABASE_URL": "✅ Connected",
@@ -190,15 +209,19 @@ def home():
 def list_events():
     """List all events"""
     try:
-        events = Event.query.all()
+        # Use raw SQL to avoid ORM column mapping issues
+        with db.engine.connect() as connection:
+            result = connection.execute(db.text("SELECT id, name, description, date, location FROM events"))
+            events_data = result.fetchall()
+            
         return jsonify({
             "events": [{
-                "id": event.id,
-                "name": event.name,
-                "description": event.description,
-                "date": event.date.isoformat() if event.date else None,
-                "location": event.location
-            } for event in events]
+                "id": row[0],
+                "name": row[1],
+                "description": row[2],
+                "date": row[3].isoformat() if row[3] else None,
+                "location": row[4]
+            } for row in events_data]
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -207,26 +230,42 @@ def list_events():
 def event_details(event_id):
     """Get event details and participants"""
     try:
-        event = Event.query.get_or_404(event_id)
-        participants = Participant.query.filter_by(event_id=event_id).all()
+        # Use raw SQL to avoid ORM issues
+        with db.engine.connect() as connection:
+            # Get event details
+            event_result = connection.execute(
+                db.text("SELECT id, name, description, date, location FROM events WHERE id = :event_id"),
+                {"event_id": event_id}
+            )
+            event_row = event_result.fetchone()
+            
+            if not event_row:
+                return jsonify({"error": "Event not found"}), 404
+            
+            # Get participants
+            participants_result = connection.execute(
+                db.text("SELECT id, name, email, ticket_number, checked_in, checkin_time FROM participants WHERE event_id = :event_id"),
+                {"event_id": event_id}
+            )
+            participants_data = participants_result.fetchall()
         
         return jsonify({
             "event": {
-                "id": event.id,
-                "name": event.name,
-                "description": event.description,
-                "date": event.date.isoformat() if event.date else None,
-                "location": event.location
+                "id": event_row[0],
+                "name": event_row[1],
+                "description": event_row[2],
+                "date": event_row[3].isoformat() if event_row[3] else None,
+                "location": event_row[4]
             },
-            "participants_count": len(participants),
+            "participants_count": len(participants_data),
             "participants": [{
-                "id": p.id,
-                "name": p.name,
-                "email": p.email,
-                "ticket_number": p.ticket_number,
-                "checked_in": p.checked_in,
-                "checkin_time": p.checkin_time.isoformat() if p.checkin_time else None
-            } for p in participants]
+                "id": row[0],
+                "name": row[1],
+                "email": row[2],
+                "ticket_number": row[3],
+                "checked_in": row[4],
+                "checkin_time": row[5].isoformat() if row[5] else None
+            } for row in participants_data]
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
